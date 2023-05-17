@@ -8,6 +8,7 @@ from accelerate import Accelerator
 from transformers import AutoModel, AutoTokenizer, DataCollatorWithPadding, AdamW , get_scheduler
 from tqdm.auto import tqdm
 import pandas as pd
+from datasets import Dataset
 
 #Initialising the accelerator object
 accelerator = Accelerator()
