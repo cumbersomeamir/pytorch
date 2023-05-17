@@ -66,5 +66,5 @@ for epoch in range (num_epochs):
     optimizer.zero_grad()
     progress_bar.update(1)
 
-
+model.push_to_hub("bert-finetuned")
 
