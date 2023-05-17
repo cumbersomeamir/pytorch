@@ -9,6 +9,7 @@ from transformers import AutoModel, AutoTokenizer, DataCollatorWithPadding, Adam
 from tqdm.auto import tqdm
 import pandas as pd
 from datasets import Dataset
+from torch.nn import CrossEntropyLoss
 
 #Initialising the accelerator object
 accelerator = Accelerator()
@@ -78,14 +79,33 @@ lr_scheduler = get_scheduler("linear", optimizer = optimizer, num_warmup_steps =
 train_dataloader, eval_dataloader, model, optimizer = accelerator.prepare(train_dataloader, eval_dataloader, model, optimizer)
 print("Accelerator prepared")
 
+
+loss_fct = CrossEntropyLoss()
+
+
+
+
 from tqdm.auto import tqdm
 progress_bar = tqdm(range(num_training_steps))
 model.train()
 for epoch in range (num_epochs):
   print("The epoch is", epoch)
   for batch in train_dataloader:
+    
     outputs = model(**batch)
-    loss = outputs.loss #Compute the loss
+    logits = output.logits
+    
+    #Shift the labels to the right by 1
+    shifted_labels = batch['labels'][:, 1:].contiguous()
+    
+    #Remove the last token from the logits to match the labels' size
+    logits = logits[:, :-1, :].contiguous()
+
+    # Flatten the logits and labels
+    reshaped_logits = logits.view(-1, logits.shape[-1])
+    reshaped_labels = shifted_labels.view(-1)
+    
+    loss = loss_fct(reshaped_logits, reshaped_labels)#Compute the loss
     accelerator.backward(loss) #Compute Gradients
     optimizer.step() #Optimise
     lr_scheduler.step()
