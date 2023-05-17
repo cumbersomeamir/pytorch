@@ -9,10 +9,14 @@ from transformers import AutoModel, AutoTokenizer, DataCollatorWithPadding, Adam
 from tqdm.auto import tqdm
 import pandas as pd
 
-
+#Initialising the accelerator object
 accelerator = Accelerator()
 
-raw_datasets = pd.read_excel("Juice Wrld Small dataset (3).xlsx")
+#Reading the excel file
+raw_datasets = pd.read_excel("Juice Wrld small dataset (3).xlsx")
+#Converting Pandas Dataframe to Huggingface Dataset
+dataset = Dataset.from_pandas(df)
+print("The huggingface dataset is ", dataset)
 
 checkpoint = "EleutherAI/gpt-neo-1.3B"
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
