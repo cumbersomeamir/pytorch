@@ -1,27 +1,32 @@
 "Installing Libraries"
-#!pip3 install torch datasets accelerate transformers tqdm
+#!pip3 install torch datasets accelerate transformers tqdm pandas
 
 "Importing Libraries"
 from datasets import load_dataset
 from torch.utils.data import DataLoader
 from accelerate import Accelerator
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, DataCollatorWithPadding, AdamW , get_scheduler
+from transformers import AutoModel, AutoTokenizer, DataCollatorWithPadding, AdamW , get_scheduler
 from tqdm.auto import tqdm
+import pandas as pd
 
 
 accelerator = Accelerator()
 
-raw_datasets = load_dataset("glue", "mrpc")
+raw_datasets = pd.read_excel("Juice Wrld Small dataset (3).xlsx")
 
-checkpoint = "bert-base-cased"
+checkpoint = "EleutherAI/gpt-neo-1.3B"
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
 def tokenize_function(examples):
-  return tokenizer(examples["sentence1"], examples["sentence2"], truncation = True)
+  return tokenizer(examples["prompt"], examples["completion"], truncation = True)
 
 
 tokenized_datasets = raw_datasets.map(tokenize_function, batched=True)
-tokenized_datasets = tokenized_datasets.remove_columns(["sentence1", "sentence2", "idx"])
-tokenized_datasets = tokenized_datasets.rename_column("label", "labels")
+tokenized_datasets = tokenized_datasets.remove_columns(["prompt", "completion", "idx"])
+
+
+
+'''
+#tokenized_datasets = tokenized_datasets.rename_column("label", "labels")
 
 #Important step - set the format
 tokenized_datasets.set_format("torch")
@@ -67,3 +72,4 @@ for epoch in range (num_epochs):
     progress_bar.update(1)
 
 
+'''
