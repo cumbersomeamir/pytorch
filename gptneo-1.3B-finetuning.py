@@ -28,12 +28,10 @@ def tokenize_function(examples):
 tokenized_datasets = dataset.map(tokenize_function, batched=True)
 print("The type of tokenized datasets is ", tokenized_datasets)
 print("The type of tokenized datasets type is ", type(tokenized_datasets))
-tokenized_datasets = tokenized_datasets.remove_columns(["prompt", "completion", "idx"])
 
 
 
 '''
-#tokenized_datasets = tokenized_datasets.rename_column("label", "labels")
 
 #Important step - set the format
 tokenized_datasets.set_format("torch")
