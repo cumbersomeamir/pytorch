@@ -14,7 +14,7 @@ from datasets import Dataset
 accelerator = Accelerator()
 
 #Reading the excel file
-raw_datasets = pd.read_excel("Juice Wrld small dataset (3).xlsx")
+df = pd.read_excel("Juice Wrld small dataset (3).xlsx")
 #Converting Pandas Dataframe to Huggingface Dataset
 dataset = Dataset.from_pandas(df)
 print("The huggingface dataset is ", dataset)
