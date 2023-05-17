@@ -44,7 +44,7 @@ model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_label
 
 optimizer = AdamW(model.parameters(), lr = 5e-5)
 
-num_epochs = 3
+num_epochs = 5
 num_training_steps = num_epochs*len(train_dataloader)
 lr_scheduler = get_scheduler("linear", optimizer = optimizer, num_warmup_steps =0, num_training_steps = num_training_steps)
 
@@ -56,6 +56,7 @@ from tqdm.auto import tqdm
 progress_bar = tqdm(range(num_training_steps))
 model.train()
 for epoch in range (num_epochs):
+  print("The epoch is", epoch)
   for batch in train_dataloader:
     outputs = model(**batch)
     loss = outputs.loss #Compute the loss
