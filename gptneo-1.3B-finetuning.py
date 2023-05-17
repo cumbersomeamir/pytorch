@@ -23,8 +23,13 @@ dataset_dict = dataset.train_test_split(test_size = 0.2)
 checkpoint = "EleutherAI/gpt-neo-1.3B"
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
 tokenizer.pad_token = tokenizer.eos_token
+
 def tokenize_function(examples):
-  return tokenizer(examples["prompt"], examples["completion"], truncation = True)
+    return {
+        'input_ids': tokenizer(examples["prompt"], truncation=True, padding='max_length', max_length=512)['input_ids'],
+        'labels': tokenizer(examples["completion"], truncation=True, padding='max_length', max_length=512)['input_ids'],
+    }
+
 
 
 tokenized_datasets = dataset_dict.map(tokenize_function, batched=True)
