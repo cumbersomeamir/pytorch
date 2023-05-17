@@ -1,5 +1,5 @@
 "Installing Libraries"
-#!pip3 install torch datasets accelerate transformers tqdm pandas
+#!pip3 install torch datasets accelerate transformers tqdm pandas openpyxl
 
 "Importing Libraries"
 from datasets import load_dataset
@@ -35,6 +35,10 @@ def tokenize_function(examples):
 tokenized_datasets = dataset_dict.map(tokenize_function, batched=True)
 print("The type of tokenized datasets is ", tokenized_datasets)
 print("The type of tokenized datasets type is ", type(tokenized_datasets))
+
+#Removing the string columns 
+column_names = ["prompt", "completion"]
+tokenized_datasets = tokenized_datasets.remove_columns(dataset_dict["train"].column_names)
 
 '''
 
