@@ -21,6 +21,7 @@ def tokenize_function(examples):
 
 
 tokenized_datasets = raw_datasets.map(tokenize_function, batched=True)
+print(type("The type of tokenized datasets is ", tokenized_datasets))
 tokenized_datasets = tokenized_datasets.remove_columns(["prompt", "completion", "idx"])
 
 
