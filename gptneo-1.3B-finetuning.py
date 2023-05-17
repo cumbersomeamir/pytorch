@@ -18,6 +18,7 @@ df = pd.read_excel("Juice Wrld small dataset (3).xlsx")
 #Converting Pandas Dataframe to Huggingface Dataset
 dataset = Dataset.from_pandas(df)
 print("The huggingface dataset is ", dataset)
+dataset_dict = dataset.train_test_split(test_size = 0.2)
 
 checkpoint = "EleutherAI/gpt-neo-1.3B"
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
@@ -25,27 +26,31 @@ def tokenize_function(examples):
   return tokenizer(examples["prompt"], examples["completion"], truncation = True)
 
 
-tokenized_datasets = dataset.map(tokenize_function, batched=True)
+tokenized_datasets = dataset_dict.map(tokenize_function, batched=True)
 print("The type of tokenized datasets is ", tokenized_datasets)
 print("The type of tokenized datasets type is ", type(tokenized_datasets))
 
 
 
-'''
+
 
 #Important step - set the format
 tokenized_datasets.set_format("torch")
+print("The torch format has been set")
 
 #Initialising the DataCollator
 data_collator = DataCollatorWithPadding(tokenizer)
+print("Data Collator Initialised")
 
 #Defining the train_dataloder and eval_dataloader
 train_dataloader = DataLoader(tokenized_datasets["train"], shuffle = True, batch_size = 8, collate_fn = data_collator)
-eval_dataloader = DataLoader(tokenized_datasets["validation"], batch_size = 8, collate_fn = data_collator)
+eval_dataloader = DataLoader(tokenized_datasets["test"], batch_size = 8, collate_fn = data_collator)
+print("Train_dataloader and Eval_dataloader have been loaded")
 
 #Loading the Model
 
-model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_labels =2)
+model = AutoModel.from_pretrained(checkpoint, num_labels =2)
+print("Model has been loaded")
 
 
 "To check everything is going well, we pass the batch we grabbed to our model. If labels are provided, transformers models always return the loss directly"
@@ -53,6 +58,7 @@ model = AutoModelForSequenceClassification.from_pretrained(checkpoint, num_label
 #print(output.loss, output.logits.shape)
 
 optimizer = AdamW(model.parameters(), lr = 5e-5)
+print("Optimizer has been loaded")
 
 num_epochs = 5
 num_training_steps = num_epochs*len(train_dataloader)
@@ -60,7 +66,7 @@ lr_scheduler = get_scheduler("linear", optimizer = optimizer, num_warmup_steps =
 
 
 train_dataloader, eval_dataloader, model, optimizer = accelerator.prepare(train_dataloader, eval_dataloader, model, optimizer)
-
+print("Accelerator prepared")
 
 from tqdm.auto import tqdm
 progress_bar = tqdm(range(num_training_steps))
