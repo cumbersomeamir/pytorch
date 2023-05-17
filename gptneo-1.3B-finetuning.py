@@ -36,7 +36,7 @@ tokenized_datasets = dataset_dict.map(tokenize_function, batched=True)
 print("The type of tokenized datasets is ", tokenized_datasets)
 print("The type of tokenized datasets type is ", type(tokenized_datasets))
 
-
+'''
 
 
 
@@ -89,3 +89,4 @@ for epoch in range (num_epochs):
     progress_bar.update(1)
 
 
+'''
