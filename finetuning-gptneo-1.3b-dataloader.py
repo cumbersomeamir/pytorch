@@ -72,14 +72,6 @@ train_dataloader, eval_dataloader, model, optimizer = accelerator.prepare(train_
 print("Accelerator prepared")
 
 
-progress_bar = tqdm(range(num_training_steps))
-
-
-trainer = Trainer(
-    model=model,
-    args=training_args,
-    train_dataset=tokenized_dataset,
-)
 
 # Fine-tune the model
 model.train()
