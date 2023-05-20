@@ -1,3 +1,6 @@
+#!pip3 install torch torchtext portalocker
+
+
 import sys
 import os
 import math
